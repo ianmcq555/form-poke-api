@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Pokedex</h1>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.username(class='form-control', placeholder='Pokemon') }}
+    {{ form.submit(class='btn btn-primary') }}
+</form>
+
+<a href="/">Go Home</a>
+
+{% endblock %}
