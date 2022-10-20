@@ -3,17 +3,17 @@ from flask import render_template
 
 @app.route('/')
 def homePage():
-    people = [{
+    trainers = [{
         'name': 'Ian',
-        'age': 25
+        'pokemon': 'Blastoise'
     },{
         'name': 'Sia',
-        'age': 22
+        'pokemon': 'Charizard'
     },{
-        'name': 'Caroline',
-        'age': 25
+        'name': 'Ash',
+        'pokemon': 'Pikachu'
     }]
-    return render_template('index.html', names=people)
+    return render_template('index.html', names=trainers)
 
 @app.route('/login')
 def loginPage():

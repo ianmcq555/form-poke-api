@@ -3,6 +3,16 @@
 
 <h1>LOGIN PAGE</h1>
 
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.username(class='form-control', placeholder='Username') }}
+    {{ form.password(class='form-control', placeholder='Password') }}
+    {{ form.submit(class='btn btn-primary') }}
+
+</form>
+
 <a href="/">Go Home</a>
 
 {% endblock %}

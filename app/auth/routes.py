@@ -1,13 +1,32 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from app.auth.forms import UserCreationForm
+from flask_login import login_user, logout_user, current_user
+from .forms import LoginForm, UserCreationForm
 from app.models  import User
-import requests, json
+from werkzeug.security import check_password_hash
 
 auth = Blueprint('auth', __name__, template_folder='auth_templates')
 
-@auth.route('/log-me-in')
+@auth.route('/log-me-in', methods=["GET", "POST"])
 def logMeIn():
-    return render_template('log-me-in.html')
+
+    form = LoginForm()
+    if request.method == "POST":
+        if form.validate():
+            username = form.username.data
+            password = form.password.data
+
+            user = User.query.filter_by(username=username).first()
+            if user:
+                if check_password_hash(user.password, password):
+                    print("successfully logged in")
+                    login_user(user)
+                    return redirect(url_for('homePage'))
+                else:
+                    print("incorrect password")
+            else:
+                print("user does not exist")
+
+    return render_template('log-me-in.html', form=form)
 
 @auth.route('/signup', methods=["GET", "POST"])
 def signUp():
@@ -16,42 +35,19 @@ def signUp():
     if request.method == "POST":
         if form.validate():
             username = form.username.data
+            email = form.email.data
+            password = form.password.data
 
-            print(username)
-            
-            # user = User(username)
-            # user.saveToDB()
-            
-            url = f'https://pokeapi.co/api/v2/pokemon/{username}'
-            requests.get(url)
-            response = requests.get(url)
-            if response.ok:
-                pokemon_dict = {}
-                name =  response.json()["name"]
-                pokemon_dict[name] = {
-                    'image' : response.json()["sprites"]["front_shiny"],
-                    'abilities' : response.json()["abilities"][0],
-                    'base_exp' : response.json()["base_experience"]
-                }
-            return pokemon_dict
+            print(username, email, password)
 
-            
+            user = User(username, email, password)
+            user.saveToDB()
 
-        return redirect(url_for('auth.signUp'))
+            return redirect(url_for('auth.logMeIn'))
 
     return render_template('sign_up.html', form=form)
 
-# def get_pokemon_info(pokemon):
-#     url = f'https://pokeapi.co/api/v2/pokemon/{pokemon}'
-#     requests.get(url)
-#     response = requests.get(url)
-#     if response.ok:
-#         my_dict = response.json()
-#         pokemon_dict = {}
-#         name =  response.json()["name"]
-#         pokemon_dict[name] = {
-#             'image' : response.json()["sprites"]["front_shiny"],
-#             'abilities' : response.json()["abilities"][0],
-#             'base_exp' : response.json()["base_experience"]
-#         }
-#     return pokemon_dict
+@auth.route('/logout')
+def logMeOut():
+    logout_user()
+    return redirect(url_for('homePage'))

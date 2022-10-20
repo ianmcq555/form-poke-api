@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Pokemon Info</h1>
+
+{% for pokemon in pokemons %}
+<div class="card" style="width: 18rem;">
+    <img src="{{ pokemon.img_url }}" class="card-img-top" alt="{{ pokemon.title }}">
+    <div class="card-body">
+      <h5 class="card-title">{{ pokemon.name }}</h5>
+      <p class="card-text">{{ pokemon.ability }}</p>
+      <p class="card-text">{{ pokemon.base_exp }}</p>
+      <h6 class="card-subtitle mb-2 text-muted">{{ pokemon.author.username }}</h6>
+    </div>
+  </div>
+
+{% endfor %}
+
+{% endblock %}

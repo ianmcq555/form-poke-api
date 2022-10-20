@@ -1,6 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Hello Pokemon Trainer!</h1>
-<h6>Click link below to search for pokemon!</h6>
-    <a href="/signup">Find Pokemon Info</a>
+    <h1>Welcome to PokeGram</h1>
+    {% if current_user.is_authenticated %}
+    <h5>Top Trainer's</h5>
+    <ol>
+    {% for p in names %}
+        {% if p.name == 'Ian' %}
+
+            <li><strong>{{ p.name }}'s #1 pokemon is {{ p['pokemon'] }}</strong></li>
+
+        {% else %}
+
+            <li>{{ p.name }}'s #1 pokemon is {{ p['pokemon'] }}</li>
+
+        {% endif %}
+
+    {% endfor %}
+    </ol>
+    {% else %}
+    <P>Login or Sign Up below!</P>
+    {% endif %}
+    {% if current_user.is_authenticated %}
+
+    <p>Get to Training!</p>
+
+    {% else %}
+
+    <a href="/log-me-in">Login Page</a>
+    <a href="/signup">Sign Up</a>
+
+    {% endif %}
 {% endblock %}

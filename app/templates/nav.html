@@ -1,7 +1,23 @@
-<nav class="navbar bg-light">
+<nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
-        <span class="navbar-text">
-            Gotta Catch 'em ALL!
-        </span>
+      <a class="navbar-brand" href="/">PokeGram</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          {% if current_user.is_authenticated %}
+          <a class="nav-link">Hello, {{ current_user.username }}</a>
+          <a class="nav-link" href="/posts">Activity Feed</a>          
+          <a class="nav-link" href="/posts/create">Create Post</a>          
+          <a class="nav-link" href="/pokedex">Pokedex</a>
+          <a class="nav-link" href="/pokedex/add">Add Pokemon to Pokedex</a>
+          <a class="nav-link" href="/logout">Log Out</a>
+          {% else %}
+          <a class="nav-link active" aria-current="page" href="/signup">Sign Up</a>
+          <a class="nav-link" href="/log-me-in">Login</a>
+          {% endif %}
+        </div>
+      </div>
     </div>
-</nav>
+  </nav>
