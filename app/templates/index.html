@@ -1,33 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Welcome to PokeGram</h1>
-    {% if current_user.is_authenticated %}
-    <h5>Top Trainer's</h5>
-    <ol>
-    {% for p in names %}
-        {% if p.name == 'Ian' %}
+<h1>Welcome to PokeGram</h1>
 
-            <li><strong>{{ p.name }}'s #1 pokemon is {{ p['pokemon'] }}</strong></li>
 
-        {% else %}
 
-            <li>{{ p.name }}'s #1 pokemon is {{ p['pokemon'] }}</li>
-
-        {% endif %}
-
+{% if current_user.is_authenticated %}
+<h5>Check Out Everyone's Team!</h5>
+{% for name, team in team_set.items() %}
+{% if name == current_user.username %}
+<h6 style="color:black;">Your Team</h6>
+<li class="list-group-item">{{ name.title() }}
+    {% for p in team %}
+    <img src="{{ p.img_url }}" alt="">
     {% endfor %}
-    </ol>
-    {% else %}
-    <P>Login or Sign Up below!</P>
-    {% endif %}
-    {% if current_user.is_authenticated %}
+    <a class="btn btn-primary" href="/pokedex">Edit Team</a>
+</li>
 
-    <p>Get to Training!</p>
 
-    {% else %}
 
-    <a href="/log-me-in">Login Page</a>
-    <a href="/signup">Sign Up</a>
+{% else %}
 
-    {% endif %}
+<li class="list-group-item">{{ name.title() }}
+    {% for p in team %}
+    <img src="{{ p.img_url }}" alt="">
+    {% endfor %}
+    <a class="btn btn-primary" href="/battle">BATTLE!</a></li>
+
+
+
+{% endif %}
+
+{% endfor %}
+{% else %}
+<P>Login or Sign Up Above!</P>
+{% endif %}
+{% if current_user.is_authenticated %}
+
+<p>Get to Training!</p>
+
+{% else %}
+
+
+{% endif %}
+
 {% endblock %}

@@ -1,19 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Add Pokemon</h1>
+<h1>Search Pokemon</h1>
 
 <form method="POST">
 
     {{ form.hidden_tag() }}
 
-    {{ form.name(class='form-control', placeholder='Name') }}
-    {{ form.ability(class='form-control', placeholder='Ability') }}
-    {{ form.img_url(class='form-control', placeholder='img_url') }}
-    {{ form.base_exp(class='form-control', placeholder='Base Experience') }}
+    {{ form.name(class='form-control', placeholder='Enter Pokemon Name') }}
     {{ form.submit(class='btn btn-primary') }}
 </form>
 
-<a href="/">Go Home</a>
+
 
 {% endblock %}

@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from flask_login import login_user, logout_user, current_user
-from .forms import LoginForm, UserCreationForm
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required, current_user
+from .forms import LoginForm, UserForm
 from app.models  import User
 from werkzeug.security import check_password_hash
 
@@ -18,32 +18,44 @@ def logMeIn():
             user = User.query.filter_by(username=username).first()
             if user:
                 if check_password_hash(user.password, password):
-                    print("successfully logged in")
+                    flash(f"Successfully logged in. Welcome back, {user.username}!", 'success')
                     login_user(user)
                     return redirect(url_for('homePage'))
                 else:
-                    print("incorrect password")
+                    flash("Incorrect password...", 'danger')
             else:
-                print("user does not exist")
+                flash("User does not exist...", 'danger')
 
     return render_template('log-me-in.html', form=form)
 
 @auth.route('/signup', methods=["GET", "POST"])
 def signUp():
 
-    form = UserCreationForm()
+    form = UserForm()
     if request.method == "POST":
         if form.validate():
             username = form.username.data
+            first_name = form.first_name.data
+            last_name = form.last_name.data
             email = form.email.data
             password = form.password.data
 
-            print(username, email, password)
+            u1 = User.query.filter_by(username=username).first()
+            u2 = User.query.filter_by(email=email).first()
 
-            user = User(username, email, password)
-            user.saveToDB()
+            if u1 and u2:
+                flash('Username and email already exist', 'danger')
+            elif u1:
+                flash('Username already exists', 'danger')
+            elif u2:
+                flash('Email already exists', 'danger')
+            else:
+                user = User(username, first_name, last_name, email, password)
+                user.saveToDB()
 
-            return redirect(url_for('auth.logMeIn'))
+                flash('Succesfully created account!', 'success')
+
+                return redirect(url_for('auth.logMeIn'))
 
     return render_template('sign_up.html', form=form)
 
@@ -51,3 +63,60 @@ def signUp():
 def logMeOut():
     logout_user()
     return redirect(url_for('homePage'))
+
+@auth.route('/user')
+@login_required
+def viewUser():
+
+    return render_template('user.html')
+
+@auth.route('/user/<int:post_id>')
+def viewUserInfo(user_id):
+    # post = Post.query.filter_by(id = post_id).first()
+    user = User.query.get(user_id)
+
+    if user:
+        return render_template('user.html', user=user)
+    else:
+        return redirect(url_for('auth.viewUserInfo'))
+
+@auth.route('/user/<int:user_id>/update', methods=["GET", "POST"])
+@login_required
+def updateUser(user_id):
+    user = User.query.get(user_id)
+    if current_user.id != user.id:
+        flash('You cannot update this user...', 'danger')
+        return redirect(url_for('auth.viewUserInfo'))
+
+    form = UserForm()
+
+    if request.method == "POST":
+        if form.validate():
+            username = form.username.data
+            first_name = form.first_name.data
+            last_name = form.last_name.data
+            email = form.email.data
+            password = form.password.data
+
+            user.username = username
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.password = password
+
+            user.saveChanges()
+
+            return redirect(url_for('auth.viewUserInfo', user_id=user_id))
+
+    return render_template('update_user.html', form=form, user=user)
+
+@auth.route('/posts/<int:user_id>/delete', methods=["GET"])
+@login_required
+def deleteUser(user_id):
+    user = User.query.get(user_id)
+    if current_user.id == user.id:
+        logout_user()
+        user.deleteFromDB()  
+    else:
+        flash('You cannot delete this post...', 'danger')
+    return redirect(url_for('auth.logMeIn'))

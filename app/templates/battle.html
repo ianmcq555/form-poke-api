@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>BattleZone</h1>
+
+
+
+{% if current_user.is_authenticated %}
+<h5>Check Out Everyone's Team!</h5>
+{% for name, team in team_set.items() %}
+{% if name == current_user.username %}
+<h6>Your Team</h6>
+<div class="container-fluid">
+<div class="row">
+    <h4>{{ name.title() }}</h4>   
+    <li class="list-group-item">
+
+
+                {% for p in team %}
+                
+                    <div class="column">
+                        <div class="card" style="width: 10rem;">
+                            <img src="{{ p.img_url }}" class="card-img-top" alt="{{ p.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ p.name.title() }}</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Base Experience: {{ p.base_exp }}</li>
+                                <li class="list-group-item">HP: {{ p.hp }}</li>
+                                <li class="list-group-item">Attack: {{ p.attack }}</li>
+                                <li class="list-group-item">Defense: {{ p.defense }}</li>
+                                <li class="list-group-item">Speed: {{ p.speed }}</li>
+                                <li class="list-group-item">Ability: {{ p.ability.upper() }}</li>
+                            </ul>
+                        
+                    </div>
+                </div>
+                {% endfor %}
+
+    </li>
+</div>    
+</div>
+
+
+
+
+{% else %}
+<div class="container-fluid">
+<div class="row">
+    <h4>{{ name.title() }}</h4>   
+    <li class="list-group-item">
+
+                {% for p in team %}
+                
+                    <div class="column">
+                        <div class="card" style="width: 10rem;">
+                            <img src="{{ p.img_url }}" class="card-img-top" alt="{{ p.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ p.name.title() }}</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Base Experience: {{ p.base_exp }}</li>
+                                <li class="list-group-item">HP: {{ p.hp }}</li>
+                                <li class="list-group-item">Attack: {{ p.attack }}</li>
+                                <li class="list-group-item">Defense: {{ p.defense }}</li>
+                                <li class="list-group-item">Speed: {{ p.speed }}</li>
+                                <li class="list-group-item">Ability: {{ p.ability.upper() }}</li>
+                            </ul>
+                        
+                    </div>
+                </div>
+
+                {% endfor %}
+
+        
+    </li><a type="button" class="btn btn-danger" href="{{ url_for('battle') }}">ATTACK!</a>
+</div>    
+</div>
+
+
+{% endif %}
+
+{% endfor %}
+{% else %}
+<P>Login or Sign Up Above!</P>
+{% endif %}
+{% if current_user.is_authenticated %}
+
+<p>Get to Training!</p>
+
+{% else %}
+
+
+{% endif %}
+
+{% endblock %}
